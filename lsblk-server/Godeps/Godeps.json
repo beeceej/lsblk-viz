@@ -1,0 +1,15 @@
+{
+	"ImportPath": "github.com/beeceej/lsblk-viz/lsblk-server",
+	"GoVersion": "go1.9",
+	"GodepVersion": "v79",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/rs/cors",
+			"Comment": "v1.2-1-geabcc6a",
+			"Rev": "eabcc6af4bbe5ad3a949d36450326a2b0b9894b8"
+		}
+	]
+}
