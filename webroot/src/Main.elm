@@ -1,12 +1,12 @@
 module Main exposing (..)
 
-import Html exposing (..)
+import Html exposing (Html, div, button, text)
 import Html as Html
-import Html.Events exposing (..)
-import Data.Devices as Devices exposing (..)
-import State.Message as Message exposing(Message(..))
+import Html.Events exposing (onClick)
+import Data.Devices as Devices exposing (empty)
+import State.Message exposing (Msg(..))
 import Device.Api exposing (get)
-import Device.View as DeviceView exposing(render)
+import Device.View as DeviceView exposing (render)
 
 
 -- MODEL
@@ -17,22 +17,20 @@ type alias Model =
     , error : String
     }
 
--- type alias Msg = State.Message.Msg
 
-
-update : Message.Message -> Model -> ( Model, Cmd Message.Message )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Message.GotLsBlk (Ok a) ->
-            Debug.log "result: " (( { model | devices = a }, Cmd.none ))
+        GotLsBlk (Ok a) ->
+            ( { model | devices = a }, Cmd.none )
 
-        Message.GotLsBlk (Err _) ->
+        GotLsBlk (Err a) ->
             ( { model | error = toString a }, Cmd.none )
 
-        Message.RetrieveLsblk ->
+        RetrieveLsblk ->
             ( model, Device.Api.get )
-        
-        Message.NoOp ->
+
+        NoOp ->
             ( model, Cmd.none )
 
 
@@ -40,12 +38,12 @@ update msg model =
 -- VIEW
 
 
-view : Model -> Html Message.Message
+view : Model -> Html Msg
 view model =
     div []
         [ button [ onClick RetrieveLsblk ] [ text "Get Info" ]
         , DeviceView.render model.devices
-        , div [] [text model.error]
+        , div [] [ text model.error ]
         ]
 
 
@@ -58,7 +56,7 @@ main =
         }
 
 
-init : ( Model, Cmd Message.Message )
+init : ( Model, Cmd Msg )
 init =
     ( { devices =
             { blockDevices = [ Devices.empty ]
@@ -69,6 +67,6 @@ init =
     )
 
 
-subscriptions : Model -> Sub Message.Message
+subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none

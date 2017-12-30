@@ -1,9 +1,10 @@
 module State.Message exposing (..)
 
 import Http exposing (Error)
-import Data.Devices as Devices exposing(..)
+import Data.Devices as Devices exposing (BlockDevices)
 
-type Message
+
+type Msg
     = NoOp
     | GotLsBlk (Result Http.Error Devices.BlockDevices)
     | RetrieveLsblk
