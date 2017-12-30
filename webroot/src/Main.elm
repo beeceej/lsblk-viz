@@ -7,15 +7,27 @@ import Data.Devices as Devices exposing (empty)
 import State.Message exposing (Msg(..))
 import Device.Api exposing (get)
 import Device.View as DeviceView exposing (render)
+import State.Model exposing (Model)
 
 
--- MODEL
+init : ( Model, Cmd Msg )
+init =
+    ( { devices =
+            { blockDevices = [ Devices.empty ]
+            }
+      , error = ""
+      }
+    , Device.Api.get
+    )
 
 
-type alias Model =
-    { devices : Devices.BlockDevices
-    , error : String
-    }
+view : Model -> Html Msg
+view model =
+    div []
+        [ button [ onClick RetrieveLsblk ] [ text "Get Info" ]
+        , DeviceView.render model.devices
+        , div [] [ text model.error ]
+        ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -34,19 +46,12 @@ update msg model =
             ( model, Cmd.none )
 
 
-
--- VIEW
-
-
-view : Model -> Html Msg
-view model =
-    div []
-        [ button [ onClick RetrieveLsblk ] [ text "Get Info" ]
-        , DeviceView.render model.devices
-        , div [] [ text model.error ]
-        ]
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
 
 
+main : Program Never Model Msg
 main =
     Html.program
         { init = init
@@ -54,19 +59,3 @@ main =
         , update = update
         , subscriptions = subscriptions
         }
-
-
-init : ( Model, Cmd Msg )
-init =
-    ( { devices =
-            { blockDevices = [ Devices.empty ]
-            }
-      , error = ""
-      }
-    , Device.Api.get
-    )
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
