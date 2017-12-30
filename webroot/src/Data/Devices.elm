@@ -1,6 +1,6 @@
-module Data.Devices exposing (..)
+module Data.Devices exposing (BlockDevices, Device, Children, empty, decodeBlockDevices)
 
-import Json.Decode as Json exposing (..)
+import Json.Decode as Json exposing (map, map8, list, string, lazy)
 
 
 type alias BlockDevices =
@@ -24,6 +24,19 @@ type Children
     = Children (List Device)
 
 
+empty : Device
+empty =
+    { name = ""
+    , majmin = ""
+    , rm = ""
+    , size = ""
+    , ro = ""
+    , diskType = ""
+    , mountPoint = Just ""
+    , children = Nothing
+    }
+
+
 decodeBlockDevices : Json.Decoder BlockDevices
 decodeBlockDevices =
     Json.map BlockDevices
@@ -42,41 +55,11 @@ decodeDevice =
         (Json.maybe <| Json.field "mountpoint" Json.string)
         (decodeChildrenLazy)
 
-{--Lazily Decode The Children type since it is used in a mutually recursive way--}
+
+
+{--Lazily Decode The Children type since it is used mutually recursively --}
+
+
 decodeChildrenLazy : Json.Decoder (Maybe Children)
 decodeChildrenLazy =
-    Json.maybe <| Json.field "children" <| Json.map Children <| Json.list <| lazy (\_ -> decodeDevice)
-
-emptyDevice : Device
-emptyDevice =
-    { name = ""
-    , majmin = ""
-    , rm = ""
-    , size = ""
-    , ro = ""
-    , diskType = ""
-    , mountPoint = Just ""
-    , children = Nothing
-    }
-
-
-json =
-    """
-{
-    "blockdevices": [
-       {"name": "sda", "maj:min": "8:0", "rm": "0", "size": "238.5G", "ro": "0", "type": "disk", "mountpoint": null,
-          "children": [
-             {"name": "sda1", "maj:min": "8:1", "rm": "0", "size": "200M", "ro": "0", "type": "part", "mountpoint": "/boot/efi"},
-             {"name": "sda2", "maj:min": "8:2", "rm": "0", "size": "1G", "ro": "0", "type": "part", "mountpoint": "/boot"},
-             {"name": "sda3", "maj:min": "8:3", "rm": "0", "size": "237.3G", "ro": "0", "type": "part", "mountpoint": null,
-                "children": [
-                   {"name": "fedora-root", "maj:min": "253:0", "rm": "0", "size": "50G", "ro": "0", "type": "lvm", "mountpoint": "/"},
-                   {"name": "fedora-swap", "maj:min": "253:1", "rm": "0", "size": "7.8G", "ro": "0", "type": "lvm", "mountpoint": "[SWAP]"},
-                   {"name": "fedora-home", "maj:min": "253:2", "rm": "0", "size": "179.5G", "ro": "0", "type": "lvm", "mountpoint": "/home"}
-                ]
-             }
-          ]
-       }
-    ]
- }
-"""
+    Json.maybe <| Json.field "children" <| Json.map Children <| Json.list <| Json.lazy (\_ -> decodeDevice)
