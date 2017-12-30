@@ -3,7 +3,7 @@
 Displays the output of lsblk in the browser via an HTTP interface
 
 * start server:
-  * `go run lsblk-server/cmd/lsblk-server.go start`
+  * `go run lsblk-server/cmd/lsblk-server.go`
 * front end using elm-reactor
   * `elm-reactor`
   * navigate to localhost:8000
