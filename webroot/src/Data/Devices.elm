@@ -1,4 +1,4 @@
-module Data.Devices exposing (BlockDevices, Device, Children, empty, decodeBlockDevices)
+module Data.Devices exposing (BlockDevices, Device, Children(..), empty, decodeBlockDevices, unwrap)
 
 import Json.Decode as Json exposing (map, map8, list, string, lazy)
 
@@ -22,6 +22,11 @@ type alias Device =
 
 type Children
     = Children (List Device)
+
+
+unwrap : Children -> List Device
+unwrap (Children devices) =
+    devices
 
 
 empty : Device

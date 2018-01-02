@@ -1,8 +1,8 @@
 module Main exposing (..)
 
-import Html exposing (Html, div, button, text)
-import Html as Html
-import Html.Events exposing (onClick)
+import Html
+import Html.Styled exposing (..)
+import Html.Styled.Events exposing (onClick)
 import Data.Devices as Devices exposing (empty)
 import State.Message exposing (Msg(..))
 import Device.Api exposing (get)
@@ -55,7 +55,7 @@ main : Program Never Model Msg
 main =
     Html.program
         { init = init
-        , view = view
+        , view = view >> toUnstyled
         , update = update
         , subscriptions = subscriptions
         }
